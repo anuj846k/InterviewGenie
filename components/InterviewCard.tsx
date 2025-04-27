@@ -5,16 +5,17 @@ import { getRandomInterviewCover } from "@/lib/utils";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import DisplayTechIcons from "./DisplayTechIcons";
+import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
-const InterviewCard = ({
-  interviewId,
+const InterviewCard = async({
+  id,
   userId,
   role,
   type,
   techstack,
   createdAt,
 }: InterviewCardProps) => {
-  const feedback: Feedback | null = null;
+  const feedback=userId && id ?await getFeedbackByInterviewId({interviewId: id, userId}) : null;
 
   const normalisedType = /mix/gi.test(type) ? "Mixed" : type;
 
@@ -50,7 +51,7 @@ const InterviewCard = ({
             </div>
           </div>
           <p className="line-clamp-2 mt-5">
-            {feedback?.finalAssesment ||
+            {feedback?.finalAssessment ||
               "You haven't taken the interview yet. Take it now to improve skills."}
           </p>
         </div>
@@ -60,8 +61,8 @@ const InterviewCard = ({
             <Link
               href={
                 feedback
-                  ? `/interview/${interviewId}/feedback}`
-                  : `/interview/${interviewId}`
+                  ? `/interview/${id}/feedback`
+                  : `/interview/${id}`
               }
             >
               {feedback ? "check Feedback" : "View Interview"}
